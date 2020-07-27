@@ -1,1 +1,1 @@
-# Ecommerce
+# Ecommerce with Angular + NodeJS
