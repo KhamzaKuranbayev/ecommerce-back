@@ -2,19 +2,33 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
+var cors = require('cors');
 var app = express();
+const bodyParser = require('body-parser');
+var express = require('express');
+app.use(express.json());
+
+
+
+var productRoute = require('./routes/products');
+var ordersRoute = require('./routes/orders');
+
+app.use('/api/products', productRoute);
+app.use('/api/orders', ordersRoute);
+
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }))
+
+app.use(cors({
+    origin: "*",
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+    allowedHeaders: 'Content-Type, Authorization, Origin, x-Requested-with, Accept, Save-Data, Viewport-Width, Width, DPR'
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 module.exports = app;
