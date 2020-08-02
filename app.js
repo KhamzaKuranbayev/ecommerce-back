@@ -8,7 +8,11 @@ const bodyParser = require('body-parser');
 var express = require('express');
 app.use(express.json());
 
-
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Origin, x-Requested-with, Accept");
+    next();
+});
 
 var productRoute = require('./routes/products');
 var ordersRoute = require('./routes/orders');
@@ -27,7 +31,7 @@ app.use(cors({
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
