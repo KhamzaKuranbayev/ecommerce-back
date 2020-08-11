@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {database} = require('../config/helpers');
+const { database } = require('../config/helpers');
 
 
 /* GET all products. */
@@ -28,15 +28,17 @@ router.get('/', (req, res) => {
             on: 'c.id = p.cat_id'
         }])
         .withFields([
+            'p.id',
+            'p.title as name',
             'c.title as category',
-            'p.title as product',
+            'p.description',
             'p.price',
             'p.quantity',
             'p.image',
-            'p.id'
+            'p.images'
         ])
         .slice(startValue, endValue)
-        .sort({id: .1})
+        .sort({ id: .1 })
         .getAll()
         .then(products => {
             if (products.length > 0) {
@@ -45,7 +47,7 @@ router.get('/', (req, res) => {
                     products: products
                 });
             } else {
-                res.json({message: 'No products founds'});
+                res.json({ message: 'No products founds' });
             }
         })
         .catch(err => {
@@ -69,19 +71,20 @@ router.get('/:id', (req, res) => {
         .withFields([
             'c.title as category',
             'p.title as name',
+            'p.description',
             'p.price',
             'p.quantity',
             'p.image',
             'p.images',
             'p.id'
         ])
-        .filter({'p.id': productId})
+        .filter({ 'p.id': productId })
         .get()
         .then(prod => {
             if (prod) {
                 res.status(200).json(prod);
             } else {
-                res.json({message: `No product found with product id ${productId}`});
+                res.json({ message: `No product found with product id ${productId}` });
             }
         })
         .catch(err => {
@@ -125,7 +128,7 @@ router.get('/category/:catName', (req, res) => {
             'p.id'
         ])
         .slice(startValue, endValue)
-        .sort({id: .1})
+        .sort({ id: .1 })
         .getAll()
         .then(products => {
             if (products.length > 0) {
@@ -134,7 +137,7 @@ router.get('/category/:catName', (req, res) => {
                     products: products
                 });
             } else {
-                res.json({message: `No products found from ${cat_title} category. `});
+                res.json({ message: `No products found from ${cat_title} category. ` });
             }
         })
         .catch(err => {

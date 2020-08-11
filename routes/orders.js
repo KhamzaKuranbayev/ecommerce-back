@@ -10,8 +10,7 @@ router.get('/', (req, res) => {
 
     database
         .table('orders_details as od')
-        .join([
-            {
+        .join([{
                 table: 'orders as o',
                 on: 'o.id = od.order_id'
             },
@@ -24,7 +23,14 @@ router.get('/', (req, res) => {
                 on: 'u.id = o.user_id'
             }
         ])
-        .withFields(['o.id', 'p.title as name', 'p.description', 'p.price', 'u.username'])
+        .withFields([
+            'o.id',
+            'p.title as name',
+            'p.description',
+            'p.price',
+            'od.quantity as quantityOrdered',
+            'p.image'
+        ])
         .sort({ id: 1 })
         .getAll()
         .then(orders => {
@@ -42,13 +48,12 @@ router.get('/', (req, res) => {
 
 /* Get single order  */
 router.get('/:id', (req, res) => {
-    
+
     const orderId = req.params.id;
 
     database
         .table('orders_details as od')
-        .join([
-            {
+        .join([{
                 table: 'orders as o',
                 on: 'o.id = od.order_id'
             },
@@ -61,7 +66,7 @@ router.get('/:id', (req, res) => {
                 on: 'u.id = o.user_id'
             }
         ])
-        .withFields(['o.id', 'p.title as name', 'p.description', 'p.price', 'u.username'])
+        .withFields(['o.id', 'p.title as name', 'p.description', 'p.price', 'u.username', 'p.image', 'od.quantity as quantityOrdered'])
         .filter({ 'o.id': orderId })
         .getAll()
         .then(order => {
@@ -82,7 +87,7 @@ router.post('/new', (req, res) => {
 
     let { userId, products } = req.body;
 
-    if (userId !== null && userId > 0 ) {
+    if (userId !== null && userId > 0) {
         database
             .table('orders')
             .insert({
@@ -119,7 +124,7 @@ router.post('/new', (req, res) => {
                                     .filter({ id: p.id })
                                     .update({
                                         quantity: data.quantity
-                                    }).then(successNum => { }).catch(error => console.log(error));
+                                    }).then(successNum => {}).catch(error => console.log(error));
 
 
                             }).catch(error => console.log(error));

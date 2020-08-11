@@ -16,9 +16,11 @@ app.use((req, res, next) => {
 
 var productRoute = require('./routes/products');
 var ordersRoute = require('./routes/orders');
+//var authRoute = require('./routes/auth');
 
 app.use('/api/products', productRoute);
 app.use('/api/orders', ordersRoute);
+//app.use('/api/auth', authRoute);
 
 app.use(bodyParser.json()) // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true }))
